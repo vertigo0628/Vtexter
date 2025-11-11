@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VTexter</string>
+
+    <!-- Auth -->
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="full_name">Full Name</string>
+    <string name="welcome_back">Welcome Back!</string>
+    <string name="create_account">Create Account</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="already_have_account">Already have an account?</string>
+
+    <!-- Chats -->
+    <string name="chats">Chats</string>
+    <string name="no_chats_yet">No chats yet</string>
+    <string name="start_a_chat">Start a Chat</string>
+    <string name="type_message">Type a message...</string>
+    <string name="send">Send</string>
+
+    <!-- Contacts -->
+    <string name="contacts">Contacts</string>
+    <string name="select_contact">Select Contact</string>
+    <string name="search_contacts">Search contacts...</string>
+    <string name="no_contacts">No contacts yet</string>
+
+    <!-- Profile -->
+    <string name="profile">Profile</string>
+    <string name="logout">Logout</string>
+    <string name="account">Account</string>
+    <string name="notifications">Notifications</string>
+    <string name="privacy">Privacy</string>
+    <string name="help">Help</string>
+    <string name="logout_confirm">Are you sure you want to logout?</string>
+
+    <!-- Status -->
+    <string name="status">Status</string>
+    <string name="no_status_updates">No status updates</string>
+    <string name="add_status">Tap + to add a status</string>
+
+    <!-- Calls -->
+    <string name="calls">Calls</string>
+    <string name="no_recent_calls">No recent calls</string>
+    <string name="call_history">Call history will appear here</string>
+    <string name="voice_call">Voice Call</string>
+    <string name="video_call">Video Call</string>
+    <string name="incoming_call">Incoming call...</string>
+    <string name="outgoing_call">Calling...</string>
+    <string name="call_ended">Call ended</string>
+
+    <!-- Media -->
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="document">Document</string>
+    <string name="attach_media">Attach media</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="choose_photo">Choose Photo</string>
+
+    <!-- Messages -->
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="typing">typing...</string>
+    <string name="online">online</string>
+    <string name="offline">offline</string>
+    <string name="last_seen">last seen</string>
+
+    <!-- Permissions -->
+    <string name="permission_camera">Camera permission needed</string>
+    <string name="permission_storage">Storage permission needed</string>
+    <string name="permission_audio">Audio permission needed</string>
+    <string name="permission_denied">Permission denied</string>
+
+    <!-- Errors -->
+    <string name="error_generic">Something went wrong</string>
+    <string name="error_network">No internet connection</string>
+    <string name="error_login">Login failed</string>
+    <string name="error_register">Registration failed</string>
+    <string name="error_send_message">Failed to send message</string>
+    <string name="error_upload">Upload failed</string>
+</resources>
