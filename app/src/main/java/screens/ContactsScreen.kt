@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.university.vtexter.components.ContactItem
@@ -22,8 +23,15 @@ fun ContactsScreen(
     onNavigateToChatDetail: (String) -> Unit,
     viewModel: ContactsViewModel = viewModel()
 ) {
+    val context = LocalContext.current
     val contacts by viewModel.contacts.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
+
+    // Initialize
+    LaunchedEffect(Unit) {
+        viewModel.initialize(context)
+    }
 
     val filteredContacts = if (searchQuery.isBlank()) {
         contacts
@@ -70,7 +78,25 @@ fun ContactsScreen(
                 singleLine = true
             )
 
-            if (filteredContacts.isEmpty()) {
+            // Loading state
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        CircularProgressIndicator()
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            "Loading contacts...",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+            // Empty state
+            else if (filteredContacts.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -89,9 +115,17 @@ fun ContactsScreen(
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.outline
                         )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            "Register more users to see them here",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.outline
+                        )
                     }
                 }
-            } else {
+            }
+            // Contact list
+            else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(filteredContacts) { contact ->
                         ContactItem(

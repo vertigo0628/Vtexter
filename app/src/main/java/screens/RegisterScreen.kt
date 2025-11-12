@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -22,6 +23,7 @@ fun RegisterScreen(
     onNavigateToChats: () -> Unit,
     viewModel: AuthViewModel = viewModel()
 ) {
+    val context = LocalContext.current
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -31,6 +33,11 @@ fun RegisterScreen(
 
     val authState by viewModel.authState.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+
+    // Initialize repository
+    LaunchedEffect(Unit) {
+        viewModel.initialize(context)
+    }
 
     LaunchedEffect(authState) {
         if (authState) {
@@ -152,7 +159,7 @@ fun RegisterScreen(
                 if (password != confirmPassword) {
                     viewModel.setError("Passwords don't match")
                 } else {
-                    viewModel.register(name.trim(), email.trim(), password)
+                    viewModel.register(name.trim(), email.trim(), password, context)
                 }
             },
             modifier = Modifier

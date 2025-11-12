@@ -8,10 +8,12 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.university.vtexter.components.ChatItem
 import com.university.vtexter.viewmodels.ChatsViewModel
+import com.university.vtexter.utils.UserSyncManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,9 +25,16 @@ fun ChatsScreen(
     onNavigateToCalls: () -> Unit,
     viewModel: ChatsViewModel = viewModel()
 ) {
+    val context = LocalContext.current
     val chats by viewModel.chats.collectAsState()
     var selectedTab by remember { mutableStateOf(0) }
     val tabs = listOf("Chats", "Status", "Calls")
+
+    // Initialize repository and start user sync
+    LaunchedEffect(Unit) {
+        viewModel.initialize(context)
+        UserSyncManager.startSync(context)
+    }
 
     Scaffold(
         topBar = {

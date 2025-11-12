@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.university.vtexter.components.MessageItem
-import com.university.vtexter.models.MessageType
 import com.university.vtexter.utils.PermissionsUtil
 import com.university.vtexter.viewmodels.ChatDetailViewModel
 import kotlinx.coroutines.launch
@@ -100,6 +99,11 @@ fun ChatDetailScreen(
         if (permissions.values.all { it }) {
             imagePickerLauncher.launch("image/*")
         }
+    }
+
+    // FIX: Initialize the repository before loading messages
+    LaunchedEffect(Unit) {
+        viewModel.initialize(context)
     }
 
     LaunchedEffect(chatId) {
