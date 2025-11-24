@@ -3,9 +3,11 @@ package com.university.vtexter.utils
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.MediaMetadataRetriever
 import android.media.ThumbnailUtils
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -57,7 +59,7 @@ object FileStorageUtil {
     }
 
     /**
-     * Save video to local storage
+     * Save video to local storage with thumbnail
      */
     suspend fun saveVideo(context: Context, videoUri: Uri, userId: String): Result<Pair<String, String>> {
         return withContext(Dispatchers.IO) {
@@ -92,22 +94,28 @@ object FileStorageUtil {
     private suspend fun generateVideoThumbnail(context: Context, videoPath: String): String {
         return withContext(Dispatchers.IO) {
             try {
-                val bitmap = ThumbnailUtils.createVideoThumbnail(
-                    videoPath,
-                    MediaStore.Video.Thumbnails.MINI_KIND
-                )
+                val retriever = MediaMetadataRetriever()
+                retriever.setDataSource(videoPath)
 
-                val thumbDir = File(context.filesDir, THUMBNAILS_DIR)
-                if (!thumbDir.exists()) thumbDir.mkdirs()
+                // Get frame at 1 second
+                val bitmap = retriever.getFrameAtTime(1000000) // 1 second in microseconds
+                retriever.release()
 
-                val fileName = "thumb_${System.currentTimeMillis()}.jpg"
-                val thumbFile = File(thumbDir, fileName)
+                if (bitmap != null) {
+                    val thumbDir = File(context.filesDir, THUMBNAILS_DIR)
+                    if (!thumbDir.exists()) thumbDir.mkdirs()
 
-                FileOutputStream(thumbFile).use { out ->
-                    bitmap?.compress(Bitmap.CompressFormat.JPEG, 80, out)
+                    val fileName = "thumb_${System.currentTimeMillis()}.jpg"
+                    val thumbFile = File(thumbDir, fileName)
+
+                    FileOutputStream(thumbFile).use { out ->
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, out)
+                    }
+
+                    thumbFile.absolutePath
+                } else {
+                    ""
                 }
-
-                thumbFile.absolutePath
             } catch (e: Exception) {
                 ""
             }
@@ -115,25 +123,24 @@ object FileStorageUtil {
     }
 
     /**
-     * Save audio file to local storage
+     * Save audio file (voice message) to local storage
      */
-    suspend fun saveAudio(context: Context, audioUri: Uri, userId: String): Result<String> {
+    suspend fun saveAudio(context: Context, audioFile: File, userId: String): Result<String> {
         return withContext(Dispatchers.IO) {
             try {
-                val inputStream = context.contentResolver.openInputStream(audioUri)
                 val audioDir = File(context.filesDir, AUDIO_DIR)
                 if (!audioDir.exists()) audioDir.mkdirs()
 
                 val fileName = "${userId}_${System.currentTimeMillis()}.m4a"
-                val audioFile = File(audioDir, fileName)
+                val destFile = File(audioDir, fileName)
 
-                inputStream?.use { input ->
-                    FileOutputStream(audioFile).use { output ->
-                        input.copyTo(output)
-                    }
-                }
+                // Copy file to permanent storage
+                audioFile.copyTo(destFile, overwrite = true)
 
-                Result.success(audioFile.absolutePath)
+                // Delete temp file
+                audioFile.delete()
+
+                Result.success(destFile.absolutePath)
             } catch (e: Exception) {
                 Result.failure(e)
             }
@@ -232,6 +239,36 @@ object FileStorageUtil {
     }
 
     /**
+     * Get video duration in seconds
+     */
+    fun getVideoDuration(filePath: String): Long {
+        return try {
+            val retriever = MediaMetadataRetriever()
+            retriever.setDataSource(filePath)
+            val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+            retriever.release()
+            (duration?.toLongOrNull() ?: 0) / 1000 // Convert to seconds
+        } catch (e: Exception) {
+            0L
+        }
+    }
+
+    /**
+     * Get audio duration in seconds
+     */
+    fun getAudioDuration(filePath: String): Long {
+        return try {
+            val retriever = MediaMetadataRetriever()
+            retriever.setDataSource(filePath)
+            val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+            retriever.release()
+            (duration?.toLongOrNull() ?: 0) / 1000 // Convert to seconds
+        } catch (e: Exception) {
+            0L
+        }
+    }
+
+    /**
      * Get mime type from file path
      */
     fun getMimeType(filePath: String): String {
@@ -286,4 +323,3 @@ object FileStorageUtil {
         }
     }
 }
-

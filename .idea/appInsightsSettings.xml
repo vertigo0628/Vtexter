@@ -9,10 +9,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.university.vtexter" />
-                  <option name="mobileSdkAppId" value="1:181532058481:android:762af0b4e1d344e9458cd0" />
-                  <option name="projectId" value="chatapp-809ad" />
-                  <option name="projectNumber" value="181532058481" />
+                  <option name="appId" value="PLACEHOLDER" />
+                  <option name="mobileSdkAppId" value="" />
+                  <option name="projectId" value="" />
+                  <option name="projectNumber" value="" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
